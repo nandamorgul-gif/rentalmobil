@@ -147,8 +147,10 @@ function submitForm(platform) {
     const car = document.getElementById('carSelect').value;
     const duration = document.getElementById('duration').value;
     const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+    const serviceType = document.getElementById('serviceType').value;
 
-    if (!name || !phone || !car || !date) {
+    if (!name || !phone || !car || !date || !time) {
         alert('Harap lengkapi semua field di formulir!');
         return;
     }
@@ -158,7 +160,8 @@ function submitForm(platform) {
         + `*No HP:* ${phone}%0A`
         + `*Mobil:* ${car}%0A`
         + `*Durasi:* ${duration}%0A`
-        + `*Tanggal Pengambilan:* ${date}%0A%0A`
+        + `*Tipe Layanan:* ${serviceType}%0A`
+        + `*Waktu:* ${date} pukul ${time}%0A%0A`
         + `Mohon konfirmasinya. Terima kasih.`;
 
     // Dummy Contact Numbers
