@@ -43,6 +43,17 @@ const cars = [
             '24jam': 'Rp 550.000',
             'mingguan': 'Rp 3.200.000'
         }
+    },
+    {
+        id: 5,
+        brand: 'Suzuki',
+        name: 'Suzuki XL7',
+        image: 'images/suzuki_xl7.png',
+        prices: {
+            '12jam': 'Rp 400.000',
+            '24jam': 'Rp 600.000',
+            'mingguan': 'Rp 3.500.000'
+        }
     }
 ];
 
