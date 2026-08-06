@@ -155,7 +155,7 @@ function submitForm(platform) {
         return;
     }
 
-    const message = `Halo Admin AutoRent, saya ingin menyewa mobil dengan detail berikut:%0A%0A`
+    const message = `Halo Admin MORGUL RENT CAR, saya ingin menyewa mobil dengan detail berikut:%0A%0A`
         + `*Nama:* ${name}%0A`
         + `*No HP:* ${phone}%0A`
         + `*Mobil:* ${car}%0A`
