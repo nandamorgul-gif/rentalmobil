@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MORGUL RENT CAR</title>
+    <meta name="description" content="Panel Admin untuk Rekapitulasi Pemesanan Customer Rental Mobil MORGUL RENT CAR">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #080c14;
+            --surface: rgba(15, 23, 42, 0.8);
+            --border: rgba(255,255,255,0.12);
+            --text: #ffffff;
+            --muted: #94a3b8;
+            --accent: #6366f1;
+            --pink: #ec4899;
+            --purple: #a855f7;
+            --green: #10b981;
+            --cyan: #06b6d4;
+            --gold: #f59e0b;
+            --danger: #ef4444;
+            --gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+        a{text-decoration:none;color:inherit}
+
+        /* ===== LOGIN PAGE ===== */
+        #loginPage {
+            min-height:100vh;display:flex;align-items:center;justify-content:center;
+            padding:2rem;position:relative;overflow:hidden;
+        }
+        #loginPage::before {
+            content:'';position:absolute;top:-40%;left:-30%;
+            width:700px;height:700px;
+            background:radial-gradient(circle,rgba(99,102,241,0.22) 0%,transparent 70%);
+            pointer-events:none;
+        }
+        #loginPage::after {
+            content:'';position:absolute;bottom:-30%;right:-20%;
+            width:600px;height:600px;
+            background:radial-gradient(circle,rgba(236,72,153,0.18) 0%,transparent 70%);
+            pointer-events:none;
+        }
+        .login-wrapper{width:100%;max-width:460px;position:relative;z-index:1;animation:fadeUp .5s ease}
+        .login-brand{text-align:center;margin-bottom:2rem}
+        .login-brand a{display:inline-flex;align-items:center;gap:.7rem;margin-bottom:.5rem}
+        .login-brand img{height:44px;border-radius:10px}
+        .login-brand .brand-name{
+            font-size:1.3rem;font-weight:800;
+            background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+        }
+        .login-brand p{color:var(--muted);font-size:.9rem}
+        .login-card{
+            background:rgba(15,23,42,.92);border:1px solid var(--border);border-radius:28px;
+            padding:2.8rem 2.5rem 2.5rem;
+            box-shadow:0 30px 60px -12px rgba(0,0,0,.9),0 0 40px rgba(99,102,241,.15);
+            position:relative;overflow:hidden;
+        }
+        .login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient)}
+        .login-card-header{text-align:center;margin-bottom:2rem}
+        .login-avatar{
+            width:72px;height:72px;border-radius:22px;
+            background:linear-gradient(135deg,rgba(99,102,241,.25),rgba(236,72,153,.25));
+            border:1px solid rgba(168,85,247,.5);
+            display:flex;align-items:center;justify-content:center;font-size:2.2rem;
+            margin:0 auto 1.2rem;box-shadow:0 0 30px rgba(99,102,241,.3);
+        }
+        .login-card-header h1{font-size:1.8rem;font-weight:800;margin-bottom:.3rem}
+        .login-card-header h1 span{
+            background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+        }
+        .login-card-header p{color:var(--muted);font-size:.88rem;line-height:1.5}
+        .form-group{margin-bottom:1.4rem}
+        .form-group label{
+            display:block;margin-bottom:.5rem;font-size:.88rem;font-weight:600;color:var(--muted);
+            text-transform:uppercase;letter-spacing:.5px;
+        }
+        .input-wrap{position:relative;display:flex;align-items:center}
+        .input-wrap .icon{position:absolute;left:14px;font-size:1.1rem;pointer-events:none}
+        .input-wrap input{
+            width:100%;padding:.9rem 1rem .9rem 2.8rem;
+            background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:14px;
+            color:var(--text);font-family:'Outfit',sans-serif;font-size:1rem;
+            transition:border-color .2s,box-shadow .2s;
+        }
+        .input-wrap input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 15px rgba(99,102,241,.3)}
+        .input-wrap .btn-eye{
+            position:absolute;right:12px;background:none;border:none;cursor:pointer;
+            font-size:1.1rem;opacity:.7;transition:opacity .2s;padding:4px;
+        }
+        .input-wrap .btn-eye:hover{opacity:1}
+        .demo-hint{
+            background:rgba(99,102,241,.08);border:1px dashed rgba(168,85,247,.4);
+            border-radius:16px;padding:1rem 1.2rem;margin-bottom:1.5rem;
+        }
+        .demo-hint-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+        .demo-hint-header span{font-size:.82rem;font-weight:700;color:#a7f3d0}
+        .btn-autofill{
+            background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.5);
+            color:#34d399;padding:.2rem .7rem;border-radius:8px;
+            font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;
+        }
+        .btn-autofill:hover{background:var(--green);color:white}
+        .demo-hint-creds{font-size:.83rem;color:var(--muted)}
+        .demo-hint-creds code{background:rgba(0,0,0,.5);padding:2px 7px;border-radius:6px;color:#60a5fa;font-weight:600}
+        .error-box{
+            background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);
+            color:#fca5a5;border-radius:12px;padding:.8rem 1rem;
+            font-size:.88rem;margin-bottom:1.2rem;text-align:center;
+        }
+        .btn-submit{
+            width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;
+            padding:1rem;background:var(--gradient);border:none;border-radius:16px;
+            color:white;font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;
+            cursor:pointer;box-shadow:0 0 25px rgba(236,72,153,.4);transition:all .3s;
+        }
+        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(236,72,153,.7)}
+        .btn-submit .arrow{transition:transform .2s}
+        .btn-submit:hover .arrow{transform:translateX(4px)}
+        .login-footer{text-align:center;margin-top:1.5rem}
+        .login-footer a{color:var(--muted);font-size:.88rem;transition:color .2s;display:inline-flex;align-items:center;gap:.4rem}
+        .login-footer a:hover{color:var(--text)}
+
+        /* ===== DASHBOARD PAGE ===== */
+        #dashboardPage{display:none;min-height:100vh;flex-direction:column}
+        .db-topbar{
+            position:sticky;top:0;z-index:100;
+            background:rgba(8,12,20,.96);backdrop-filter:blur(20px);
+            border-bottom:1px solid var(--border);
+            display:flex;align-items:center;justify-content:space-between;
+            padding:0 2rem;height:68px;gap:1rem;
+        }
+        .db-topbar-brand{display:flex;align-items:center;gap:.8rem}
+        .db-topbar-brand img{height:36px;border-radius:8px}
+        .db-topbar-brand span{
+            font-size:1.1rem;font-weight:800;
+            background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+        }
+        .db-topbar-right{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+        .admin-badge{
+            display:flex;align-items:center;gap:.5rem;
+            background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);
+            border-radius:50px;padding:.35rem .9rem;font-size:.85rem;font-weight:600;
+        }
+        .admin-avatar{
+            width:28px;height:28px;border-radius:50%;background:var(--gradient);
+            display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;
+        }
+        .btn-tb{
+            display:flex;align-items:center;gap:.4rem;padding:.45rem .9rem;
+            border-radius:10px;font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:600;
+            cursor:pointer;border:none;transition:all .2s;
+        }
+        .btn-tb-green{background:linear-gradient(135deg,var(--green),#059669);color:white}
+        .btn-tb-blue {background:linear-gradient(135deg,#3b82f6,#2563eb);color:white}
+        .btn-tb-purple{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white}
+        .btn-tb-red{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:var(--danger)}
+        .btn-tb:hover{transform:translateY(-1px);opacity:.9}
+        .btn-tb-red:hover{background:var(--danger);color:white}
+        .db-home-link{color:var(--muted);font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:.3rem;transition:color .2s}
+        .db-home-link:hover{color:var(--text)}
+        .db-main{padding:2rem;max-width:1400px;margin:0 auto;width:100%}
+        .db-page-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+        .db-page-title h2{font-size:2rem;font-weight:800;margin-bottom:.3rem}
+        .db-page-title h2 span{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .db-page-title p{color:var(--muted);font-size:.9rem}
+        .filter-bar{
+            display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;
+            background:rgba(15,23,42,.7);border:1px solid var(--border);border-radius:16px;padding:.7rem 1.2rem;
+        }
+        .filter-bar label{font-size:.82rem;color:var(--muted);font-weight:600}
+        .filter-select{
+            background:rgba(0,0,0,.4);border:1px solid var(--border);color:var(--text);
+            padding:.5rem .8rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.88rem;
+            cursor:pointer;outline:none;transition:border-color .2s;
+        }
+        .filter-select:focus{border-color:var(--accent)}
+        .filter-divider{width:1px;height:28px;background:var(--border)}
+        #currentPeriodLabel{font-size:.85rem;color:#a7f3d0;font-weight:600}
+        .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-bottom:2rem}
+        .kpi-card{
+            background:rgba(15,23,42,.7);border:1px solid var(--border);border-radius:22px;
+            padding:1.6rem;display:flex;align-items:center;gap:1.2rem;
+            transition:transform .3s,border-color .3s,box-shadow .3s;
+        }
+        .kpi-card:hover{transform:translateY(-5px);border-color:rgba(168,85,247,.4);box-shadow:0 15px 30px -10px rgba(0,0,0,.5),0 0 20px rgba(99,102,241,.15)}
+        .kpi-ico{width:58px;height:58px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex-shrink:0}
+        .ico-green{background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.4)}
+        .ico-blue {background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4)}
+        .ico-purple{background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.4)}
+        .ico-gold {background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.4)}
+        .kpi-text{display:flex;flex-direction:column;overflow:hidden}
+        .kpi-label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+        .kpi-value{
+            font-size:1.55rem;font-weight:800;
+            background:linear-gradient(135deg,#fff 0%,#cbd5e1 100%);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:2px 0;
+        }
+        .kpi-sub{font-size:.8rem;color:var(--green);font-weight:500}
+        .charts-grid{display:grid;grid-template-columns:3fr 2fr;gap:1.5rem;margin-bottom:2rem}
+        .chart-card{background:rgba(15,23,42,.7);border:1px solid var(--border);border-radius:22px;padding:1.6rem}
+        .chart-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem}
+        .chart-card-header h3{font-size:1.05rem;font-weight:700}
+        .chart-chip{background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:20px;padding:.2rem .7rem;font-size:.72rem;color:var(--muted)}
+        .chart-canvas-wrap{position:relative;height:280px;width:100%}
+        .table-card{background:rgba(15,23,42,.7);border:1px solid var(--border);border-radius:22px;padding:1.8rem}
+        .table-card-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.4rem}
+        .table-card-header h3{font-size:1.15rem;font-weight:800}
+        .table-card-header p{font-size:.82rem;color:var(--muted);margin-top:2px}
+        .table-controls{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center}
+        .search-box{
+            background:rgba(0,0,0,.4);border:1px solid var(--border);color:var(--text);
+            padding:.55rem 1rem;border-radius:12px;font-family:'Outfit',sans-serif;font-size:.88rem;
+            width:240px;outline:none;transition:border-color .2s;
+        }
+        .search-box:focus{border-color:var(--accent);box-shadow:0 0 10px rgba(99,102,241,.25)}
+        .status-select{
+            background:rgba(0,0,0,.4);border:1px solid var(--border);color:var(--text);
+            padding:.55rem .8rem;border-radius:12px;font-family:'Outfit',sans-serif;font-size:.88rem;outline:none;cursor:pointer;
+        }
+        .table-wrap{overflow-x:auto;margin-top:.5rem}
+        table{width:100%;border-collapse:collapse;font-size:.9rem}
+        thead tr th{
+            background:rgba(0,0,0,.5);color:var(--muted);padding:1rem;font-weight:600;text-align:left;
+            white-space:nowrap;border-bottom:1px solid var(--border);text-transform:uppercase;font-size:.75rem;letter-spacing:.6px;
+        }
+        tbody tr td{padding:1rem;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+        tbody tr{transition:background .15s}
+        tbody tr:hover{background:rgba(255,255,255,.04)}
+        .cust-cell{display:flex;align-items:center;gap:.8rem}
+        .cust-avatar{
+            width:38px;height:38px;border-radius:50%;background:var(--gradient);
+            color:white;display:flex;align-items:center;justify-content:center;
+            font-weight:700;font-size:.82rem;flex-shrink:0;box-shadow:0 0 10px rgba(99,102,241,.3);
+        }
+        .cust-name{font-weight:700}
+        .cust-phone{font-size:.78rem;color:var(--muted)}
+        .btn-wa-tiny{
+            display:inline-flex;align-items:center;gap:.3rem;
+            background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);
+            color:#4ade80;padding:.2rem .55rem;border-radius:7px;font-size:.73rem;font-weight:600;
+            cursor:pointer;text-decoration:none;margin-top:3px;transition:all .2s;
+        }
+        .btn-wa-tiny:hover{background:#25D366;color:white}
+        .badge{display:inline-block;padding:.28rem .85rem;border-radius:50px;font-size:.76rem;font-weight:700;letter-spacing:.3px}
+        .badge-ok {background:rgba(16,185,129,.18);color:#34d399;border:1px solid rgba(16,185,129,.4)}
+        .badge-pnd{background:rgba(245,158,11,.18);color:#fbbf24;border:1px solid rgba(245,158,11,.4)}
+        .badge-bkn{background:rgba(239,68,68,.18);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
+        .act-wrap{display:flex;gap:.4rem;align-items:center}
+        .act-sel{
+            background:rgba(0,0,0,.3);border:1px solid var(--border);color:var(--text);
+            padding:.32rem .6rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.78rem;cursor:pointer;outline:none;
+        }
+        .act-del{
+            background:transparent;border:1px solid var(--border);color:var(--danger);
+            padding:.32rem .5rem;border-radius:8px;font-size:.8rem;cursor:pointer;transition:all .2s;
+        }
+        .act-del:hover{background:rgba(239,68,68,.2);border-color:var(--danger)}
+        .empty-state{text-align:center;padding:3rem;color:var(--muted)}
+
+        /* ===== ADD MODAL ===== */
+        .modal-bg{
+            position:fixed;inset:0;background:rgba(4,7,13,.85);backdrop-filter:blur(12px);
+            z-index:500;display:flex;align-items:center;justify-content:center;
+            padding:1.5rem;animation:fadeUp .25s ease;
+        }
+        .modal-box{
+            width:100%;max-width:560px;background:rgba(15,23,42,.97);
+            border:1px solid var(--border);border-radius:28px;padding:2.5rem;
+            position:relative;box-shadow:0 30px 60px rgba(0,0,0,.9);overflow:hidden;
+        }
+        .modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient)}
+        .modal-close-btn{
+            position:absolute;top:1.2rem;right:1.2rem;
+            background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);
+            width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+            font-size:1.4rem;cursor:pointer;transition:all .2s;
+        }
+        .modal-close-btn:hover{background:rgba(239,68,68,.2);color:white}
+        .modal-box h3{font-size:1.4rem;font-weight:800;margin-bottom:1.6rem}
+        .modal-box h3 span{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .form-row{display:flex;gap:1rem}
+        .form-row .form-group{flex:1}
+        .form-group{margin-bottom:1.2rem}
+        .form-group label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:.4rem}
+        .form-group input,.form-group select{
+            width:100%;padding:.75rem 1rem;
+            background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:12px;
+            color:var(--text);font-family:'Outfit',sans-serif;font-size:.92rem;transition:border-color .2s;
+        }
+        .form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 12px rgba(99,102,241,.25)}
+        .form-group select option{background:#0f172a}
+        .btn-save{
+            width:100%;padding:.95rem;background:var(--gradient);border:none;border-radius:14px;
+            color:white;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;
+            box-shadow:0 0 20px rgba(236,72,153,.35);transition:all .3s;margin-top:.5rem;
+        }
+        .btn-save:hover{transform:translateY(-2px);box-shadow:0 0 35px rgba(236,72,153,.6)}
+
+        /* ===== TOAST ===== */
+        .toast{
+            position:fixed;bottom:2rem;right:2rem;
+            background:rgba(15,23,42,.97);border:1px solid rgba(16,185,129,.5);
+            border-radius:20px;padding:1.1rem 1.5rem;
+            display:flex;align-items:center;gap:1rem;
+            box-shadow:0 20px 40px rgba(0,0,0,.8),0 0 25px rgba(16,185,129,.3);
+            z-index:1000;animation:fadeUp .4s ease;max-width:420px;
+        }
+        .toast-icon{font-size:2rem;flex-shrink:0}
+        .toast-body h4{font-size:1rem;font-weight:700;color:#34d399}
+        .toast-body p{font-size:.82rem;color:var(--muted);margin-top:2px}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+        @media(max-width:960px){.charts-grid{grid-template-columns:1fr}}
+        @media(max-width:768px){
+            .db-topbar{padding:0 1rem;height:auto;padding-top:.8rem;padding-bottom:.8rem;flex-wrap:wrap}
+            .db-main{padding:1rem}
+            .db-page-header{flex-direction:column}
+            .filter-bar{width:100%}
+            .form-row{flex-direction:column}
+            .login-card{padding:2rem 1.5rem}
+            .table-controls{width:100%}
+            .search-box{width:100%}
+        }
+        @media print{
+            #loginPage{display:none!important}
+            #dashboardPage{display:flex!important;flex-direction:column!important}
+            .db-topbar-right,.table-controls,.act-wrap,.btn-wa-tiny{display:none!important}
+            body{background:white!important;color:black!important}
+            .kpi-value{-webkit-text-fill-color:black!important;background:none!important;color:black!important}
+            .db-page-title h2 span{-webkit-text-fill-color:black!important}
+            .charts-grid{display:none!important}
+            thead tr th{background:#f0f4f8!important;color:black!important}
+            tbody tr td{color:black!important;border-bottom:1px solid #ddd!important}
+            .badge{border:1px solid #ccc!important;color:black!important;background:#f9f9f9!important}
+            .kpi-card,.table-card,.chart-card{border:1px solid #ddd!important;background:white!important;box-shadow:none!important}
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============= LOGIN PAGE ============= -->
+<div id="loginPage">
+    <div class="login-wrapper">
+        <div class="login-brand">
+            <a href="index.html">
+                <img src="images/logo.png" alt="Logo">
+                <span class="brand-name">MORGUL RENT CAR</span>
+            </a>
+            <p>Portal Admin &nbsp;•&nbsp; Rekapitulasi Pemesanan Customer</p>
+        </div>
+        <div class="login-card">
+            <div class="login-card-header">
+                <div class="login-avatar">🔐</div>
+                <h1>Login <span>Admin</span></h1>
+                <p>Masukkan username dan password untuk mengakses dashboard rekapitulasi data customer sewa mobil per bulan</p>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="inputUser">Username</label>
+                    <div class="input-wrap">
+                        <span class="icon">👤</span>
+                        <input type="text" id="inputUser" placeholder="Masukkan username admin" required autocomplete="username">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPass">Password</label>
+                    <div class="input-wrap">
+                        <span class="icon">🔑</span>
+                        <input type="password" id="inputPass" placeholder="Masukkan password" required autocomplete="current-password">
+                        <button type="button" class="btn-eye" onclick="togglePw()">👁️</button>
+                    </div>
+                </div>
+                <div id="errBox" class="error-box" style="display:none">❌ Username atau password salah!</div>
+                <div class="demo-hint">
+                    <div class="demo-hint-header">
+                        <span>💡 Kredensial Demo Admin</span>
+                        <button type="button" class="btn-autofill" onclick="autoFill()">⚡ Auto-fill</button>
+                    </div>
+                    <div class="demo-hint-creds">
+                        Username: <code>admin</code> &nbsp;|&nbsp; Password: <code>admin123</code>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span>Masuk ke Dashboard Rekap</span>
+                    <span class="arrow">➔</span>
+                </button>
+            </form>
+        </div>
+        <div class="login-footer">
+            <a href="index.html">← Kembali ke Website</a>
+        </div>
+    </div>
+</div>
+
+<!-- ============= DASHBOARD PAGE ============= -->
+<div id="dashboardPage">
+    <div class="db-topbar">
+        <div class="db-topbar-brand">
+            <img src="images/logo.png" alt="Logo">
+            <span>MORGUL RENT CAR</span>
+        </div>
+        <div class="db-topbar-right">
+            <a href="index.html" class="db-home-link">🏠 Website</a>
+            <div class="admin-badge">
+                <div class="admin-avatar">AD</div>
+                <span>Administrator</span>
+            </div>
+            <button class="btn-tb btn-tb-green" onclick="openAddModal()">➕ Tambah</button>
+            <button class="btn-tb btn-tb-blue" onclick="exportCSV()">📥 CSV</button>
+            <button class="btn-tb btn-tb-purple" onclick="window.print()">🖨️ Cetak</button>
+            <button class="btn-tb btn-tb-red" onclick="doLogout()">🚪 Logout</button>
+        </div>
+    </div>
+    <div class="db-main">
+        <div class="db-page-header">
+            <div class="db-page-title">
+                <h2>Dashboard Rekap <span>Pemesanan</span></h2>
+                <p id="currentPeriodLabel">Memuat data...</p>
+            </div>
+            <div class="filter-bar">
+                <label>Bulan:</label>
+                <select id="fMonth" class="filter-select" onchange="refreshDashboard()">
+                    <option value="all">Semua Bulan</option>
+                    <option value="0">Januari</option><option value="1">Februari</option>
+                    <option value="2">Maret</option><option value="3">April</option>
+                    <option value="4">Mei</option><option value="5">Juni</option>
+                    <option value="6">Juli</option><option value="7">Agustus</option>
+                    <option value="8">September</option><option value="9">Oktober</option>
+                    <option value="10">November</option><option value="11">Desember</option>
+                </select>
+                <div class="filter-divider"></div>
+                <label>Tahun:</label>
+                <select id="fYear" class="filter-select" onchange="refreshDashboard()">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- KPI -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-ico ico-green">💰</div>
+                <div class="kpi-text">
+                    <span class="kpi-label">Total Pendapatan</span>
+                    <div class="kpi-value" id="kRevenue">Rp 0</div>
+                    <span class="kpi-sub">Periode terpilih</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-ico ico-blue">📋</div>
+                <div class="kpi-text">
+                    <span class="kpi-label">Total Pemesanan</span>
+                    <div class="kpi-value" id="kTotal">0</div>
+                    <span class="kpi-sub">Transaksi customer</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-ico ico-purple">📊</div>
+                <div class="kpi-text">
+                    <span class="kpi-label">Rata-rata Sewa</span>
+                    <div class="kpi-value" id="kAvg">Rp 0</div>
+                    <span class="kpi-sub">Per transaksi</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-ico ico-gold">🚘</div>
+                <div class="kpi-text">
+                    <span class="kpi-label">Mobil Terlaris</span>
+                    <div class="kpi-value" id="kTopCar">-</div>
+                    <span class="kpi-sub" id="kTopCarCount">0× disewa</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h3>📈 Pendapatan Rekap Perbulan</h3>
+                    <span class="chart-chip">Trend Bulanan</span>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="revenueChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h3>🚘 Distribusi Sewa Mobil</h3>
+                    <span class="chart-chip">Popularitas</span>
+                </div>
+                <div class="chart-canvas-wrap"><canvas id="carChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <div>
+                    <h3>📋 Rekapitulasi Data Customer</h3>
+                    <p id="tableNote">Menampilkan semua data pemesanan</p>
+                </div>
+                <div class="table-controls">
+                    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Cari nama / mobil..." oninput="renderTable()">
+                    <select id="statusFilter" class="status-select" onchange="renderTable()">
+                        <option value="all">Semua Status</option>
+                        <option value="Selesai">Selesai</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Dibatalkan">Dibatalkan</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th><th>Kode Booking</th><th>Tanggal</th><th>Customer</th>
+                            <th>Mobil</th><th>Durasi</th><th>Layanan</th>
+                            <th>Total Sewa</th><th>Status</th><th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Order Modal -->
+<div id="addModal" class="modal-bg" style="display:none">
+    <div class="modal-box">
+        <button class="modal-close-btn" onclick="closeAddModal()">&times;</button>
+        <h3>Tambah <span>Transaksi Manual</span></h3>
+        <form id="addForm" onsubmit="saveOrder(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nama Customer</label>
+                    <input type="text" id="mName" placeholder="Nama lengkap" required>
+                </div>
+                <div class="form-group">
+                    <label>No Telepon / WA</label>
+                    <input type="tel" id="mPhone" placeholder="08123456789" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Pilih Mobil</label>
+                    <select id="mCar" required onchange="calcPrice()">
+                        <option value="" disabled selected>Pilih...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Durasi Sewa</label>
+                    <select id="mDur" required onchange="calcPrice()">
+                        <option value="12 Jam">12 Jam</option>
+                        <option value="24 Jam">24 Jam</option>
+                        <option value="Mingguan">Mingguan (7 Hari)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Tanggal Sewa</label>
+                    <input type="date" id="mDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipe Layanan</label>
+                    <select id="mService" required>
+                        <option value="Ambil Sendiri di Pool">Ambil Sendiri di Pool</option>
+                        <option value="Diantar ke Lokasi">Diantar ke Lokasi</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Total Harga (Rp)</label>
+                    <input type="number" id="mPrice" placeholder="500000" required>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="mStatus" required>
+                        <option value="Selesai">Selesai</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Dibatalkan">Dibatalkan</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn-save">💾 Simpan Transaksi</button>
+        </form>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="display:none" class="toast">
+    <div class="toast-icon" id="toastIcon">✅</div>
+    <div class="toast-body">
+        <h4 id="toastTitle">Berhasil</h4>
+        <p id="toastMsg">Operasi berhasil dijalankan.</p>
+    </div>
+</div>
+
+<script>
+/* ===== DATA ===== */
+const ORDERS_KEY = 'morgul_rent_orders_v1';
+const CARS = [
+    { name:'Toyota Avanza',   prices:{'12 Jam':350000,'24 Jam':500000,'Mingguan':3000000} },
+    { name:'Honda Brio',      prices:{'12 Jam':300000,'24 Jam':450000,'Mingguan':2700000} },
+    { name:'Daihatsu Xenia',  prices:{'12 Jam':350000,'24 Jam':500000,'Mingguan':3000000} },
+    { name:'Suzuki Ertiga',   prices:{'12 Jam':380000,'24 Jam':550000,'Mingguan':3200000} },
+    { name:'Suzuki XL7',      prices:{'12 Jam':400000,'24 Jam':600000,'Mingguan':3500000} }
+];
+const MONTHS       = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+
+function getOrders() {
+    const raw = localStorage.getItem(ORDERS_KEY);
+    if (!raw) return seedAndGet();
+    try { return JSON.parse(raw); } catch { return []; }
+}
+function saveOrders(arr) { localStorage.setItem(ORDERS_KEY, JSON.stringify(arr)); }
+
+function seedAndGet() {
+    const seed = [
+        {id:'MGL-891021',date:'2026-08-28',customerName:'Budi Santoso',   phone:'081298765432',carName:'Toyota Avanza', duration:'24 Jam',  serviceType:'Diantar ke Lokasi',    totalPrice:500000, status:'Selesai'},
+        {id:'MGL-891022',date:'2026-08-25',customerName:'Siti Rahma',     phone:'085711223344',carName:'Honda Brio',    duration:'12 Jam',  serviceType:'Ambil Sendiri di Pool', totalPrice:300000, status:'Selesai'},
+        {id:'MGL-891023',date:'2026-08-20',customerName:'Ahmad Fauzi',    phone:'081344556677',carName:'Suzuki XL7',   duration:'Mingguan',serviceType:'Diantar ke Lokasi',    totalPrice:3500000,status:'Selesai'},
+        {id:'MGL-891024',date:'2026-08-15',customerName:'Deni Kurniawan', phone:'087811992288',carName:'Daihatsu Xenia',duration:'24 Jam', serviceType:'Ambil Sendiri di Pool', totalPrice:500000, status:'Selesai'},
+        {id:'MGL-891025',date:'2026-08-02',customerName:'Rina Wijaya',    phone:'082199887766',carName:'Suzuki Ertiga',duration:'24 Jam',  serviceType:'Diantar ke Lokasi',    totalPrice:550000, status:'Selesai'},
+        {id:'MGL-891026',date:'2026-08-29',customerName:'Kevin Pratama',  phone:'081233445566',carName:'Toyota Avanza',duration:'12 Jam',  serviceType:'Diantar ke Lokasi',    totalPrice:350000, status:'Pending'},
+        {id:'MGL-771011',date:'2026-07-28',customerName:'Hendra Gunawan', phone:'081255443322',carName:'Toyota Avanza',duration:'Mingguan',serviceType:'Ambil Sendiri di Pool',totalPrice:3000000,status:'Selesai'},
+        {id:'MGL-771012',date:'2026-07-20',customerName:'Nadia Putri',    phone:'085699887711',carName:'Honda Brio',   duration:'24 Jam',  serviceType:'Diantar ke Lokasi',    totalPrice:450000, status:'Selesai'},
+        {id:'MGL-771013',date:'2026-07-14',customerName:'Eko Prasetyo',   phone:'087733221100',carName:'Suzuki XL7',  duration:'24 Jam',  serviceType:'Diantar ke Lokasi',    totalPrice:600000, status:'Selesai'},
+        {id:'MGL-771014',date:'2026-07-05',customerName:'Maya Indah',     phone:'081900112233',carName:'Daihatsu Xenia',duration:'12 Jam',serviceType:'Ambil Sendiri di Pool', totalPrice:350000, status:'Selesai'},
+        {id:'MGL-661001',date:'2026-06-25',customerName:'Rizky Ramadhan', phone:'081388776655',carName:'Suzuki Ertiga',duration:'Mingguan',serviceType:'Diantar ke Lokasi',    totalPrice:3200000,status:'Selesai'},
+        {id:'MGL-661002',date:'2026-06-18',customerName:'Fajar Nugraha',  phone:'085211447788',carName:'Toyota Avanza',duration:'24 Jam', serviceType:'Ambil Sendiri di Pool', totalPrice:500000, status:'Selesai'},
+        {id:'MGL-661003',date:'2026-06-10',customerName:'Dewi Lestari',   phone:'081822334455',carName:'Honda Brio',   duration:'12 Jam',  serviceType:'Diantar ke Lokasi',    totalPrice:300000, status:'Selesai'},
+        {id:'MGL-551001',date:'2026-05-22',customerName:'Agus Setiawan',  phone:'081277665544',carName:'Suzuki XL7',  duration:'Mingguan',serviceType:'Diantar ke Lokasi',    totalPrice:3500000,status:'Selesai'},
+        {id:'MGL-551002',date:'2026-05-12',customerName:'Lestari Anggraini',phone:'085644332211',carName:'Toyota Avanza',duration:'24 Jam',serviceType:'Ambil Sendiri di Pool',totalPrice:500000,status:'Selesai'}
+    ];
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(seed));
+    return seed;
+}
+
+/* ===== HELPERS ===== */
+function fmt(n){ return 'Rp ' + Number(n||0).toLocaleString('id-ID'); }
+function initials(name){ if(!name) return '?'; const p=name.trim().split(/\s+/); return(p.length>=2?p[0][0]+p[1][0]:p[0].substring(0,2)).toUpperCase(); }
+function showToast(icon,title,msg){
+    document.getElementById('toastIcon').textContent=icon;
+    document.getElementById('toastTitle').textContent=title;
+    document.getElementById('toastMsg').textContent=msg;
+    const t=document.getElementById('toast'); t.style.display='flex';
+    clearTimeout(window._tt);
+    window._tt=setTimeout(()=>{t.style.display='none';},4500);
+}
+
+/* ===== LOGIN ===== */
+const CREDS={user:'admin',pass:'admin123'};
+function togglePw(){ const i=document.getElementById('inputPass'); i.type=i.type==='password'?'text':'password'; }
+function autoFill(){ document.getElementById('inputUser').value=CREDS.user; document.getElementById('inputPass').value=CREDS.pass; document.getElementById('errBox').style.display='none'; }
+function handleLogin(e){
+    e.preventDefault();
+    const u=document.getElementById('inputUser').value.trim();
+    const p=document.getElementById('inputPass').value.trim();
+    if(u===CREDS.user && p===CREDS.pass){ document.getElementById('errBox').style.display='none'; showDashboard(); }
+    else { document.getElementById('errBox').style.display='block'; }
+}
+function showDashboard(){
+    document.getElementById('loginPage').style.display='none';
+    const db=document.getElementById('dashboardPage');
+    db.style.display='flex'; db.style.flexDirection='column';
+    const now=new Date();
+    document.getElementById('fMonth').value=now.getMonth().toString();
+    document.getElementById('fYear').value=now.getFullYear().toString();
+    initCarSelect(); refreshDashboard();
+}
+function doLogout(){
+    document.getElementById('dashboardPage').style.display='none';
+    document.getElementById('loginPage').style.display='flex';
+    document.getElementById('inputUser').value='';
+    document.getElementById('inputPass').value='';
+}
+
+/* ===== DASHBOARD ===== */
+let revChart=null, carChart=null;
+function refreshDashboard(){
+    const month=document.getElementById('fMonth').value;
+    const year=document.getElementById('fYear').value;
+    const all=getOrders();
+    const filtered=all.filter(o=>{
+        if(!o.date) return false;
+        const d=new Date(o.date);
+        if(d.getFullYear().toString()!==year) return false;
+        if(month!=='all' && d.getMonth().toString()!==month) return false;
+        return true;
+    });
+    const valid=filtered.filter(o=>o.status!=='Dibatalkan');
+    const totalRev=valid.reduce((s,o)=>s+(o.totalPrice||0),0);
+    const count=filtered.length;
+    const avg=valid.length?Math.round(totalRev/valid.length):0;
+    const cmap={};
+    valid.forEach(o=>{cmap[o.carName]=(cmap[o.carName]||0)+1;});
+    let topCar='-',topCnt=0;
+    Object.entries(cmap).forEach(([k,v])=>{if(v>topCnt){topCnt=v;topCar=k;}});
+    document.getElementById('kRevenue').textContent=fmt(totalRev);
+    document.getElementById('kTotal').textContent=count+' Transaksi';
+    document.getElementById('kAvg').textContent=fmt(avg);
+    document.getElementById('kTopCar').textContent=topCar;
+    document.getElementById('kTopCarCount').textContent=topCnt+'× disewa';
+    const lbl=month==='all'?`Rekap Tahun ${year} — Total ${count} Pemesanan Customer`:`${MONTHS[parseInt(month)]} ${year} — Total ${count} Pemesanan Customer`;
+    document.getElementById('currentPeriodLabel').textContent=lbl;
+    document.getElementById('tableNote').textContent='Rekapitulasi Periode: '+lbl;
+    window._filteredBase=filtered;
+    renderTable(filtered);
+    drawCharts(all,year);
+}
+
+/* ===== TABLE ===== */
+function renderTable(base){
+    const src=base||window._filteredBase||getOrders();
+    const search=(document.getElementById('searchInput').value||'').toLowerCase();
+    const status=document.getElementById('statusFilter').value;
+    const rows=src.filter(o=>{
+        const hit=(o.customerName||'').toLowerCase().includes(search)||(o.carName||'').toLowerCase().includes(search)||(o.id||'').toLowerCase().includes(search);
+        return hit&&(status==='all'||o.status===status);
+    });
+    const tb=document.getElementById('tableBody');
+    if(!rows.length){ tb.innerHTML=`<tr><td colspan="10" class="empty-state">Tidak ada data pemesanan customer yang sesuai.</td></tr>`; return; }
+    tb.innerHTML=rows.map((o,i)=>{
+        const bdg=o.status==='Selesai'?'badge-ok':o.status==='Pending'?'badge-pnd':'badge-bkn';
+        const ini=initials(o.customerName);
+        const ph=(o.phone||'').replace(/[^0-9]/g,'');
+        const wa=ph.startsWith('0')?'62'+ph.slice(1):ph;
+        return `<tr>
+            <td>${i+1}</td>
+            <td><strong style="color:#06b6d4">${o.id}</strong></td>
+            <td><small style="color:#94a3b8">${o.date||'-'}</small></td>
+            <td><div class="cust-cell">
+                <div class="cust-avatar">${ini}</div>
+                <div>
+                    <div class="cust-name">${o.customerName}</div>
+                    <div class="cust-phone">${o.phone||'-'}</div>
+                    ${wa?`<a href="https://wa.me/${wa}" target="_blank" class="btn-wa-tiny">💬 Chat WA</a>`:''}
+                </div>
+            </div></td>
+            <td><strong>${o.carName}</strong></td>
+            <td>${o.duration}</td>
+            <td><small style="color:#94a3b8">${o.serviceType||'-'}</small></td>
+            <td><strong style="color:#a7f3d0">${fmt(o.totalPrice)}</strong></td>
+            <td><span class="badge ${bdg}">${o.status}</span></td>
+            <td><div class="act-wrap">
+                <select class="act-sel" onchange="updateStatus('${o.id}',this.value)">
+                    <option value="Selesai" ${o.status==='Selesai'?'selected':''}>Selesai</option>
+                    <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
+                    <option value="Dibatalkan" ${o.status==='Dibatalkan'?'selected':''}>Batal</option>
+                </select>
+                <button class="act-del" onclick="deleteOrder('${o.id}')">🗑️</button>
+            </div></td>
+        </tr>`;
+    }).join('');
+}
+
+/* ===== CHARTS ===== */
+function drawCharts(all,year){
+    const monthly=new Array(12).fill(0);
+    const carMap={};
+    CARS.forEach(c=>{carMap[c.name]=0;});
+    all.forEach(o=>{
+        if(!o.date||o.status==='Dibatalkan') return;
+        const d=new Date(o.date);
+        if(d.getFullYear().toString()!==year) return;
+        monthly[d.getMonth()]+=(o.totalPrice||0);
+        if(carMap[o.carName]!==undefined) carMap[o.carName]++;
+        else carMap[o.carName]=(carMap[o.carName]||0)+1;
+    });
+    const rc=document.getElementById('revenueChart');
+    if(revChart) revChart.destroy();
+    revChart=new Chart(rc,{
+        type:'bar',
+        data:{labels:MONTHS_SHORT,datasets:[{
+            label:`Pendapatan ${year}`,data:monthly,
+            backgroundColor:'rgba(99,102,241,0.6)',borderColor:'#6366f1',
+            borderWidth:1.5,borderRadius:7,borderSkipped:false
+        }]},
+        options:{
+            responsive:true,maintainAspectRatio:false,
+            plugins:{legend:{labels:{color:'#94a3b8'}},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)}}},
+            scales:{
+                x:{ticks:{color:'#94a3b8'},grid:{color:'rgba(255,255,255,0.05)'}},
+                y:{ticks:{color:'#94a3b8',callback:v=>(v/1000000).toFixed(1)+' Jt'},grid:{color:'rgba(255,255,255,0.05)'}}
+            }
+        }
+    });
+    const cc=document.getElementById('carChart');
+    if(carChart) carChart.destroy();
+    carChart=new Chart(cc,{
+        type:'doughnut',
+        data:{labels:Object.keys(carMap),datasets:[{data:Object.values(carMap),backgroundColor:['#6366f1','#06b6d4','#10b981','#f59e0b','#ec4899'],borderWidth:0}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',boxWidth:12,padding:12}}}}
+    });
+}
+
+/* ===== ORDER CRUD ===== */
+function updateStatus(id,st){ const arr=getOrders(); const idx=arr.findIndex(o=>o.id===id); if(idx>=0){arr[idx].status=st;saveOrders(arr);refreshDashboard();} }
+function deleteOrder(id){ if(!confirm(`Hapus pesanan ${id}?`)) return; saveOrders(getOrders().filter(o=>o.id!==id)); refreshDashboard(); showToast('🗑️','Dihapus',`Pesanan ${id} berhasil dihapus.`); }
+
+/* ===== ADD MODAL ===== */
+function initCarSelect(){ const sel=document.getElementById('mCar'); if(sel.options.length>1) return; CARS.forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;sel.appendChild(o);}); }
+function calcPrice(){ const car=document.getElementById('mCar').value; const dur=document.getElementById('mDur').value; const obj=CARS.find(c=>c.name===car); if(obj&&obj.prices[dur]) document.getElementById('mPrice').value=obj.prices[dur]; }
+function openAddModal(){ document.getElementById('addModal').style.display='flex'; document.getElementById('mDate').value=new Date().toISOString().split('T')[0]; calcPrice(); }
+function closeAddModal(){ document.getElementById('addModal').style.display='none'; document.getElementById('addForm').reset(); }
+function saveOrder(e){
+    e.preventDefault();
+    const o={
+        id:'MGL-'+Math.floor(100000+Math.random()*900000),
+        date:document.getElementById('mDate').value,
+        customerName:document.getElementById('mName').value.trim(),
+        phone:document.getElementById('mPhone').value.trim(),
+        carName:document.getElementById('mCar').value,
+        duration:document.getElementById('mDur').value,
+        serviceType:document.getElementById('mService').value,
+        totalPrice:parseInt(document.getElementById('mPrice').value)||0,
+        status:document.getElementById('mStatus').value
+    };
+    const arr=getOrders(); arr.unshift(o); saveOrders(arr);
+    closeAddModal(); refreshDashboard();
+    showToast('✅','Transaksi Disimpan',`Kode ${o.id} berhasil ditambahkan ke rekap.`);
+}
+
+/* ===== EXPORT ===== */
+function exportCSV(){
+    const orders=getOrders();
+    let csv='ID,Tanggal,Nama Customer,No HP,Mobil,Durasi,Layanan,Total Harga (Rp),Status\n';
+    orders.forEach(o=>{csv+=`"${o.id}","${o.date}","${o.customerName}","${o.phone}","${o.carName}","${o.duration}","${o.serviceType}","${o.totalPrice}","${o.status}"\n`;});
+    const a=document.createElement('a');
+    a.href='data:text/csv;charset=utf-8,'+encodeURI(csv);
+    a.download=`Rekap_MORGUL_RENT_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+}
+</script>
+</body>
+</html>
