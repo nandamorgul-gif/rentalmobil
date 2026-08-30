@@ -300,9 +300,9 @@ function updateNavAdminBtn() {
     const btnContainer = document.getElementById('navAdminBtnContainer');
     if (!btnContainer) return;
     if (checkAdminAuth()) {
-        btnContainer.innerHTML = `<button class="btn-admin-nav" onclick="openDashboardModal()">Login</button>`;
+        btnContainer.innerHTML = `<button class="btn-admin-nav" onclick="openDashboardModal()">👤 Login</button>`;
     } else {
-        btnContainer.innerHTML = `<button class="btn-admin-nav" onclick="openLoginModal()">Login</button>`;
+        btnContainer.innerHTML = `<button class="btn-admin-nav" onclick="openLoginModal()">👤 Login</button>`;
     }
 }
 
