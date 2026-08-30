@@ -14,6 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -28,6 +30,7 @@
             <li><a href="#home">Beranda</a></li>
             <li><a href="#katalog">Katalog Mobil</a></li>
             <li><a href="#pemesanan">Pesan Sekarang</a></li>
+            <li id="navAdminBtnContainer"><button class="btn-admin-nav" onclick="toggleAdminNavAction()">🔒 Login Admin</button></li>
         </ul>
         <div class="hamburger">
             <span></span>
@@ -175,6 +178,250 @@
             <p>&copy; 2026 MORGUL RENT CAR. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Login Admin Modal -->
+    <div id="loginModal" class="modal-overlay hidden">
+        <div class="modal-card glass-panel">
+            <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+            <div class="modal-header">
+                <div class="modal-icon">🔒</div>
+                <h2>Login <span class="gradient-text">Admin</span></h2>
+                <p>Masukkan kredensial untuk mengakses Dashboard Rekap Bulanan</p>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="adminUsername">Username</label>
+                    <input type="text" id="adminUsername" required placeholder="Masukkan username admin" value="admin">
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="adminPassword" required placeholder="Masukkan password" value="admin123">
+                        <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility()">👁️</button>
+                    </div>
+                </div>
+                <div id="loginError" class="alert-error hidden">Username atau password salah!</div>
+                <div class="hint-box">
+                    💡 <strong>Tips Demo:</strong> Username: <code>admin</code> | Password: <code>admin123</code>
+                </div>
+                <button type="submit" class="btn-primary glow-effect btn-block">Masuk ke Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Modal / Full View -->
+    <div id="dashboardModal" class="dashboard-overlay hidden">
+        <div class="dashboard-container glass-panel">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="brand-info">
+                    <img src="images/logo.png" alt="Logo" style="height: 38px; border-radius: 6px;">
+                    <div>
+                        <h2>Dashboard Rekap <span class="gradient-text">Pemesanan</span></h2>
+                        <p class="subtitle">Rekapitulasi Harga & Statistik Pemesanan Bulanan MORGUL RENT CAR</p>
+                    </div>
+                </div>
+                <div class="dashboard-actions">
+                    <div class="filter-controls">
+                        <label for="filterMonth" style="font-size:0.85rem; color:var(--text-secondary); margin-right:4px;">Bulan:</label>
+                        <select id="filterMonth" class="select-styled" onchange="updateDashboardView()">
+                            <option value="all">Semua Bulan</option>
+                            <option value="0">Januari</option>
+                            <option value="1">Februari</option>
+                            <option value="2">Maret</option>
+                            <option value="3">April</option>
+                            <option value="4">Mei</option>
+                            <option value="5">Juni</option>
+                            <option value="6">Juli</option>
+                            <option value="7">Agustus</option>
+                            <option value="8">September</option>
+                            <option value="9">Oktober</option>
+                            <option value="10">November</option>
+                            <option value="11">Desember</option>
+                        </select>
+
+                        <label for="filterYear" style="font-size:0.85rem; color:var(--text-secondary); margin-left:8px; margin-right:4px;">Tahun:</label>
+                        <select id="filterYear" class="select-styled" onchange="updateDashboardView()">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                        </select>
+                    </div>
+
+                    <button class="btn-action btn-add" onclick="openAddOrderModal()">➕ Tambah Transaksi</button>
+                    <button class="btn-action btn-export" onclick="exportDataCSV()">📥 Export CSV</button>
+                    <button class="btn-action btn-print" onclick="printReport()">🖨️ Cetak Rekap</button>
+                    <button class="btn-action btn-logout" onclick="handleLogout()">🚪 Logout</button>
+                    <button class="modal-close-dash" onclick="closeDashboardModal()">&times;</button>
+                </div>
+            </div>
+
+            <!-- KPI Summary Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon icon-green">💰</div>
+                    <div class="kpi-details">
+                        <span class="kpi-title">Total Pendapatan</span>
+                        <h3 id="kpiTotalRevenue" class="kpi-value">Rp 0</h3>
+                        <span id="kpiRevenuePeriod" class="kpi-subtext">Bulan Terpilih</span>
+                    </div>
+                </div>
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon icon-blue">📋</div>
+                    <div class="kpi-details">
+                        <span class="kpi-title">Total Pemesanan</span>
+                        <h3 id="kpiTotalOrders" class="kpi-value">0 Transaksi</h3>
+                        <span id="kpiOrdersSubtext" class="kpi-subtext">Transaksi Aktif</span>
+                    </div>
+                </div>
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon icon-purple">📊</div>
+                    <div class="kpi-details">
+                        <span class="kpi-title">Rata-rata Transaksi</span>
+                        <h3 id="kpiAvgValue" class="kpi-value">Rp 0</h3>
+                        <span class="kpi-subtext">Nilai Rata-rata / Pesanan</span>
+                    </div>
+                </div>
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon icon-gold">🚘</div>
+                    <div class="kpi-details">
+                        <span class="kpi-title">Mobil Terlaris</span>
+                        <h3 id="kpiTopCar" class="kpi-value">-</h3>
+                        <span id="kpiTopCarCount" class="kpi-subtext">0x disewa</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <div class="chart-card glass-card">
+                    <div class="chart-header">
+                        <h3>📈 Grafik Rekap Pendapatan Perbulan</h3>
+                        <span class="chart-tag">Trend Bulanan</span>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="monthlyRevenueChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card glass-card">
+                    <div class="chart-header">
+                        <h3>🚘 Distribusi Pemesanan per Mobil</h3>
+                        <span class="chart-tag">Popularitas</span>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="carDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Section -->
+            <div class="table-section glass-card">
+                <div class="table-header">
+                    <div class="table-title">
+                        <h3>📋 Daftar Transaksi & Rekapitulasi</h3>
+                        <p id="tableSubhead">Menampilkan semua transaksi</p>
+                    </div>
+                    <div class="table-filters">
+                        <input type="text" id="searchOrderInput" placeholder="🔍 Cari pelanggan / mobil..." oninput="filterTableData()" class="search-input">
+                        <select id="filterStatus" onchange="filterTableData()" class="select-styled">
+                            <option value="all">Semua Status</option>
+                            <option value="Selesai">Selesai</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Dibatalkan">Dibatalkan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Kode Booking</th>
+                                <th>Tanggal</th>
+                                <th>Pelanggan</th>
+                                <th>Mobil</th>
+                                <th>Durasi</th>
+                                <th>Layanan</th>
+                                <th>Total Harga</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orderTableBody">
+                            <!-- Injected via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Add/Edit Order Modal -->
+    <div id="addOrderModal" class="modal-overlay hidden">
+        <div class="modal-card glass-panel" style="max-width: 550px;">
+            <button class="modal-close" onclick="closeAddOrderModal()">&times;</button>
+            <div class="modal-header">
+                <h2>Tambah <span class="gradient-text">Transaksi Manual</span></h2>
+                <p>Catat transaksi pemesanan secara manual ke dalam sistem rekap</p>
+            </div>
+            <form id="manualOrderForm" onsubmit="handleSaveManualOrder(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="manualName">Nama Pelanggan</label>
+                        <input type="text" id="manualName" required placeholder="Nama lengkap">
+                    </div>
+                    <div class="form-group">
+                        <label for="manualPhone">No Telepon/WA</label>
+                        <input type="tel" id="manualPhone" required placeholder="08123456789">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="manualCarSelect">Mobil</label>
+                        <select id="manualCarSelect" required onchange="calculateManualPrice()">
+                            <option value="" disabled selected>Pilih Mobil...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="manualDuration">Durasi Sewa</label>
+                        <select id="manualDuration" required onchange="calculateManualPrice()">
+                            <option value="12 Jam">12 Jam</option>
+                            <option value="24 Jam">24 Jam</option>
+                            <option value="Mingguan">Mingguan (7 Hari)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="manualDate">Tanggal Pemesanan</label>
+                        <input type="date" id="manualDate" required onchange="calculateManualPrice()">
+                    </div>
+                    <div class="form-group">
+                        <label for="manualService">Layanan</label>
+                        <select id="manualService" required>
+                            <option value="Ambil Sendiri di Pool">Ambil Sendiri di Pool</option>
+                            <option value="Diantar ke Lokasi">Diantar ke Lokasi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="manualPrice">Total Harga (Rp)</label>
+                        <input type="number" id="manualPrice" required placeholder="500000">
+                    </div>
+                    <div class="form-group">
+                        <label for="manualStatus">Status Transaksi</label>
+                        <select id="manualStatus" required>
+                            <option value="Selesai">Selesai</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Dibatalkan">Dibatalkan</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary glow-effect btn-block" style="margin-top: 1rem;">Simpan Transaksi</button>
+            </form>
+        </div>
+    </div>
 
     <script src="main.js"></script>
 </body>
