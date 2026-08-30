@@ -444,13 +444,22 @@ function filterTableData(currentFilteredOrders = null) {
     renderTableBody(displayOrders);
 }
 
+function getInitials(name) {
+    if (!name) return 'CS';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return parts[0].substring(0, 2).toUpperCase();
+}
+
 function renderTableBody(ordersList) {
     const tbody = document.getElementById('orderTableBody');
     if (!tbody) return;
     tbody.innerHTML = '';
 
     if (ordersList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 2rem; color: var(--text-secondary);">Tidak ada data pemesanan yang sesuai.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 2.5rem; color: var(--text-secondary);">Tidak ada data pemesanan customer yang sesuai.</td></tr>`;
         return;
     }
 
@@ -461,26 +470,38 @@ function renderTableBody(ordersList) {
         if (ord.status === 'Selesai') badgeClass = 'badge-selesai';
         if (ord.status === 'Dibatalkan') badgeClass = 'badge-dibatalkan';
 
+        const initials = getInitials(ord.customerName);
+        const cleanPhone = (ord.phone || '').replace(/[^0-9]/g, '');
+        const waPhone = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone;
+
         tr.innerHTML = `
             <td>${idx + 1}</td>
-            <td><strong>${ord.id}</strong></td>
-            <td>${ord.date || '-'}</td>
+            <td><strong style="color:var(--accent-cyan);">${ord.id}</strong></td>
+            <td><small style="color:var(--text-secondary);">${ord.date || '-'}</small></td>
             <td>
-                <div><strong>${ord.customerName}</strong></div>
-                <small style="color:var(--text-secondary);">${ord.phone}</small>
+                <div class="customer-cell">
+                    <div class="customer-avatar">${initials}</div>
+                    <div>
+                        <div style="font-weight:700;">${ord.customerName}</div>
+                        <small style="color:var(--text-secondary);">${ord.phone || '-'}</small><br>
+                        ${waPhone ? `<a href="https://wa.me/${waPhone}" target="_blank" class="btn-wa-row">💬 Chat WA</a>` : ''}
+                    </div>
+                </div>
             </td>
-            <td>${ord.carName}</td>
+            <td><strong>${ord.carName}</strong></td>
             <td>${ord.duration}</td>
             <td><small style="color:var(--text-secondary);">${ord.serviceType || 'Pool'}</small></td>
-            <td><strong>${formatRupiah(ord.totalPrice)}</strong></td>
+            <td><strong style="color:#a7f3d0;">${formatRupiah(ord.totalPrice)}</strong></td>
             <td><span class="badge ${badgeClass}">${ord.status}</span></td>
             <td>
-                <select onchange="updateOrderStatus('${ord.id}', this.value)" class="btn-tbl-action">
-                    <option value="Selesai" ${ord.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
-                    <option value="Pending" ${ord.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                    <option value="Dibatalkan" ${ord.status === 'Dibatalkan' ? 'selected' : ''}>Batal</option>
-                </select>
-                <button onclick="deleteOrder('${ord.id}')" class="btn-tbl-action btn-tbl-delete" title="Hapus">🗑️</button>
+                <div style="display:flex; gap:0.4rem; align-items:center;">
+                    <select onchange="updateOrderStatus('${ord.id}', this.value)" class="btn-tbl-action">
+                        <option value="Selesai" ${ord.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                        <option value="Pending" ${ord.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                        <option value="Dibatalkan" ${ord.status === 'Dibatalkan' ? 'selected' : ''}>Batal</option>
+                    </select>
+                    <button onclick="deleteOrder('${ord.id}')" class="btn-tbl-action btn-tbl-delete" title="Hapus Transaksi">🗑️</button>
+                </div>
             </td>
         `;
         tbody.appendChild(tr);
