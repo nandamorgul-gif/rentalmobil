@@ -334,6 +334,15 @@ function togglePasswordVisibility() {
     }
 }
 
+function quickFillDemo() {
+    const userInp = document.getElementById('adminUsername');
+    const passInp = document.getElementById('adminPassword');
+    if (userInp) userInp.value = 'admin';
+    if (passInp) passInp.value = 'admin123';
+    const err = document.getElementById('loginError');
+    if (err) err.classList.add('hidden');
+}
+
 function handleLogin(event) {
     event.preventDefault();
     const user = document.getElementById('adminUsername').value.trim();

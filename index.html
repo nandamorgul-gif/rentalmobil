@@ -182,29 +182,44 @@
     <!-- Login Admin Modal -->
     <div id="loginModal" class="modal-overlay hidden">
         <div class="modal-card glass-panel">
-            <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+            <button class="modal-close" onclick="closeLoginModal()" title="Tutup">&times;</button>
             <div class="modal-header">
-                <div class="modal-icon">🔒</div>
-                <h2>Login <span class="gradient-text">Admin</span></h2>
-                <p>Masukkan kredensial untuk mengakses Dashboard Rekap Bulanan</p>
+                <div class="modal-icon">🔐</div>
+                <h2>Portal Login <span class="gradient-text">Admin</span></h2>
+                <p>Masukkan kredensial Anda untuk mengakses Dashboard Rekapitulasi Pemesanan Customer</p>
             </div>
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <label for="adminUsername">Username</label>
-                    <input type="text" id="adminUsername" required placeholder="Masukkan username admin" value="admin">
-                </div>
-                <div class="form-group">
-                    <label for="adminPassword">Password</label>
-                    <div class="password-input-wrapper">
-                        <input type="password" id="adminPassword" required placeholder="Masukkan password" value="admin123">
-                        <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility()">👁️</button>
+                    <label for="adminUsername">Username Admin</label>
+                    <div class="input-with-icon">
+                        <span class="field-icon">👤</span>
+                        <input type="text" id="adminUsername" required placeholder="Masukkan username admin" value="admin">
                     </div>
                 </div>
-                <div id="loginError" class="alert-error hidden">Username atau password salah!</div>
-                <div class="hint-box">
-                    💡 <strong>Tips Demo:</strong> Username: <code>admin</code> | Password: <code>admin123</code>
+                <div class="form-group">
+                    <label for="adminPassword">Password Admin</label>
+                    <div class="input-with-icon">
+                        <span class="field-icon">🔑</span>
+                        <input type="password" id="adminPassword" required placeholder="Masukkan password" value="admin123">
+                        <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility()" title="Lihat Password">👁️</button>
+                    </div>
                 </div>
-                <button type="submit" class="btn-primary glow-effect btn-block">Masuk ke Dashboard</button>
+                <div id="loginError" class="alert-error hidden">❌ Username atau password yang Anda masukkan salah!</div>
+                
+                <div class="hint-box">
+                    <div class="hint-header">
+                        <span>💡 Kredensial Demo Admin</span>
+                        <button type="button" class="btn-quick-fill" onclick="quickFillDemo()">⚡ Auto-fill</button>
+                    </div>
+                    <div class="hint-details">
+                        Username: <code>admin</code> &nbsp;|&nbsp; Password: <code>admin123</code>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary glow-effect btn-block btn-login-submit">
+                    <span>Masuk ke Dashboard Rekap</span>
+                    <span class="btn-arrow">➔</span>
+                </button>
             </form>
         </div>
     </div>
