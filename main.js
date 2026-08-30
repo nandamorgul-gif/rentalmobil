@@ -200,7 +200,24 @@ function seedMockData() {
     ];
 }
 
-// --- Public Form Submission (Auto-Records Order) ---
+// Toast notification launcher
+function showToast(title, message) {
+    const toast = document.getElementById('toastNotification');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMsg = document.getElementById('toastMessage');
+
+    if (!toast) return;
+    if (toastTitle) toastTitle.textContent = title;
+    if (toastMsg) toastMsg.textContent = message;
+
+    toast.classList.remove('hidden');
+
+    setTimeout(() => {
+        toast.classList.add('hidden');
+    }, 5000);
+}
+
+// --- Public Form Submission (Auto-Records Order to Admin Panel) ---
 function submitForm(platform) {
     const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
@@ -224,7 +241,7 @@ function submitForm(platform) {
         else if (duration === 'Mingguan') numericPrice = parsePriceString(carObj.prices['mingguan']);
     }
 
-    // Record order in localStorage automatically
+    // Record order in localStorage automatically for Admin Panel
     const newOrder = {
         id: 'MGL-' + Math.floor(100000 + Math.random() * 900000),
         date: date,
@@ -241,6 +258,12 @@ function submitForm(platform) {
     const orders = getOrders();
     orders.unshift(newOrder);
     saveOrders(orders);
+
+    // Show instant toast feedback
+    showToast(
+        '✅ Pesanan Berhasil Dicatat!',
+        `Kode Booking ${newOrder.id} (${car}) telah otomatis tercatat ke Panel Rekap Admin & diteruskan ke ${platform.toUpperCase()}.`
+    );
 
     const message = `Halo Admin MORGUL RENT CAR, saya ingin menyewa mobil dengan detail berikut:%0A%0A`
         + `*Kode Booking:* ${newOrder.id}%0A`
@@ -262,7 +285,7 @@ function submitForm(platform) {
         window.open(`https://t.me/${tgUsername}?text=${message}`, '_blank');
     }
 
-    // If dashboard is open, update view
+    // If dashboard is open, update view immediately
     if (!document.getElementById('dashboardModal').classList.contains('hidden')) {
         updateDashboardView();
     }

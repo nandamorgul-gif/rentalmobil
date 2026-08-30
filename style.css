@@ -1188,6 +1188,53 @@ footer {
         opacity: 1;
         transform: scale(1) translateY(0);
     }
+/* --- Toast Notification Banner --- */
+.toast-notification {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 1.2rem 1.6rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.3);
+    z-index: 3000;
+    animation: toastSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    max-width: 440px;
+}
+
+.toast-icon {
+    font-size: 2.2rem;
+    flex-shrink: 0;
+}
+
+.toast-body h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #34d399;
+    margin-bottom: 2px;
+}
+
+.toast-body p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+@keyframes toastSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* --- Print Styles --- */
