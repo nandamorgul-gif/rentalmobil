@@ -302,7 +302,7 @@ function updateNavAdminBtn() {
     if (checkAdminAuth()) {
         btnContainer.innerHTML = `<button class="btn-admin-nav" onclick="openDashboardModal()">📊 Dashboard Rekap</button>`;
     } else {
-        btnContainer.innerHTML = `<button class="btn-admin-nav" onclick="openLoginModal()">🔒 Login Admin</button>`;
+        btnContainer.innerHTML = `<button class="btn-admin-nav" onclick="openLoginModal()">🔐 Login</button>`;
     }
 }
 
